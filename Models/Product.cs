@@ -15,5 +15,8 @@ namespace urbanmart.Models
         public decimal Price { get; set; }
 
         public string Category { get; set; }
+
+        [BsonElement("ImageUrl")] // Add image URL field
+        public string ImageUrl { get; set; }
     }
 }

@@ -16,9 +16,11 @@ namespace urbanmart.Controllers
             _productService = productService;
         }
 
+        // GET: api/Products
         [HttpGet]
         public ActionResult<List<Product>> Get() => _productService.Get();
 
+        // GET: api/Products/{id}
         [HttpGet("{id:length(24)}", Name = "GetProduct")]
         public ActionResult<Product> Get(string id)
         {
@@ -30,6 +32,7 @@ namespace urbanmart.Controllers
             return product;
         }
 
+        // POST: api/Products
         [HttpPost]
         public ActionResult<Product> Create(Product product)
         {
@@ -37,6 +40,7 @@ namespace urbanmart.Controllers
             return CreatedAtRoute("GetProduct", new { id = product.Id }, product);
         }
 
+        // PUT: api/Products/{id}
         [HttpPut("{id:length(24)}")]
         public IActionResult Update(string id, Product productIn)
         {
@@ -49,6 +53,7 @@ namespace urbanmart.Controllers
             return NoContent();
         }
 
+        // DELETE: api/Products/{id}
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
