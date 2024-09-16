@@ -36,6 +36,7 @@ namespace urbanmart
             services.AddSingleton<ProductsService>();
             services.AddSingleton<OrdersService>();
             services.AddSingleton<UsersService>();
+            services.AddSingleton<NotificationsService>();
             services.AddControllers();
 
             // Swagger configuration
