@@ -37,9 +37,16 @@ namespace urbanmart
             services.AddSingleton<OrdersService>();
 
             services.AddControllers();
+
+            // Swagger configuration
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "urbanmart", Version = "v1" });
+                var environment = Configuration["ASPNETCORE_ENVIRONMENT"] ?? "Unknown";
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = $"urbanmart API - {environment}",
+                    Version = "v1"
+                });
             });
         }
 
@@ -61,7 +68,7 @@ namespace urbanmart
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "urbanmart v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", $"urbanmart API - {env.EnvironmentName}"));
 
             app.UseHttpsRedirection();
 
