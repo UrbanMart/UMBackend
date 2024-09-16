@@ -41,10 +41,10 @@ namespace urbanmart
             // Swagger configuration
             services.AddSwaggerGen(c =>
             {
-                var environment = Configuration["ASPNETCORE_ENVIRONMENT"] ?? "Unknown";
+                var environment = Configuration["ASPNETCORE_ENVIRONMENT"];
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = $"urbanmart API - {environment}",
+                    Title = string.IsNullOrEmpty(environment) ? "urbanmart API" : $"urbanmart API - {environment}",
                     Version = "v1"
                 });
             });
