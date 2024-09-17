@@ -29,25 +29,35 @@ namespace urbanmart
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configure DatabaseSettings
             services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
             services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
-            // Register ProductsService and OrdersService
+            // Register Services
             services.AddSingleton<ProductsService>();
             services.AddSingleton<OrdersService>();
             services.AddSingleton<UsersService>();
             services.AddSingleton<ProductInventoryService>();
             services.AddSingleton<NotificationsService>();
+
             services.AddControllers();
 
-            // Add CORS policy to allow requests from frontend origin
+            // Read CORS settings from configuration
+            var allowedOrigins = Configuration["CORS:AllowedOrigins"]?.Split(',');
+
+            // Add CORS policy
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder
-                        .WithOrigins("http://localhost:3000")  // Frontend origin
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+                    builder =>
+                    {
+                        if (allowedOrigins != null)
+                        {
+                            builder.WithOrigins(allowedOrigins)
+                                   .AllowAnyMethod()
+                                   .AllowAnyHeader();
+                        }
+                    });
             });
 
             // Swagger configuration
@@ -74,7 +84,6 @@ namespace urbanmart
             }
             else
             {
-                // Use custom exception page or other configurations for production
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
