@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace urbanmart.Models
 {
-    public class Product
+    public class ProductInventory
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -12,11 +12,21 @@ namespace urbanmart.Models
         [BsonElement("Name")]
         public string Name { get; set; }
 
+        [BsonElement("Price")]
         public decimal Price { get; set; }
 
+        [BsonElement("Category")]
         public string Category { get; set; }
 
-        [BsonElement("ImageUrl")] // Add image URL field
-        public string ImageUrl { get; set; }
+        [BsonElement("Quantity")]
+        public int Quantity { get; set; }
+
+        [BsonElement("ReorderLevel")]
+        public int ReorderLevel { get; set; }
+
+        [BsonElement("VendorId")]
+        public string VendorId { get; set; }
+
+      
     }
 }
