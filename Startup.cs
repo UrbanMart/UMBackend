@@ -40,6 +40,16 @@ namespace urbanmart
             services.AddSingleton<NotificationsService>();
             services.AddControllers();
 
+            // Add CORS policy to allow requests from frontend origin
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder
+                        .WithOrigins("http://localhost:3000")  // Frontend origin
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
             // Swagger configuration
             services.AddSwaggerGen(c =>
             {
@@ -75,6 +85,9 @@ namespace urbanmart
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // Enable CORS
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseAuthorization();
 
