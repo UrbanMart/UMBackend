@@ -1,3 +1,14 @@
+/*
+ * File: UsersController.cs
+ * Description: This file defines the UsersController class for the UrbanMart application. 
+ *              It provides API endpoints for managing users, including operations like 
+ *              fetching, creating, updating, deleting users, and user login authentication.
+ * Author: Darshi Buddhini
+ * Date: 16/09/24
+ * 
+ * The UsersController class uses the UsersService class to perform operations 
+ * on user data stored in a MongoDB database.
+ */
 using urbanmart.Models;
 using urbanmart.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -120,5 +131,40 @@ namespace urbanmart.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+
+        // POST: api/Users/login
+        [HttpPost("login")]
+        public ActionResult<User> Login([FromBody] UserLoginDto loginDto)
+        {
+            if (loginDto == null || string.IsNullOrEmpty(loginDto.Email) || string.IsNullOrEmpty(loginDto.Password))
+            {
+                return BadRequest("Invalid login details");
+            }
+
+            try
+            {
+                var user = _userService.Login(loginDto.Email, loginDto.Password);
+
+                if (user == null)
+                {
+                    return Unauthorized("Invalid email or password");
+                }
+
+                return Ok(user); // Return authenticated user data
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+    
+
+    // Data Transfer Object (DTO) for login
+    public class UserLoginDto
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
     }
 }

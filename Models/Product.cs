@@ -1,3 +1,13 @@
+/*
+ * File: Product.cs
+ * Description: This file defines the Product model for the UrbanMart application.
+ *              It represents individual product details including name, price, category,
+ *              and an image URL. The model is stored in a MongoDB collection.
+ * Author: Imesh Vitharana
+ * Date: 15/09/24
+ * 
+ * The Product class is used to manage the product catalog for UrbanMart.
+ */
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

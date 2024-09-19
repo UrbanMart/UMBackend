@@ -1,3 +1,14 @@
+/*
+ * File: ProductInventoryController.cs
+ * Description: This file defines the ProductInventoryController for managing the product inventory 
+ *              in the UrbanMart application. It handles operations such as retrieving, updating, 
+ *              and managing inventory levels for products.
+ * Author: Darshi Buddhini
+ * Date: 16/09/24
+ * 
+ * The ProductInventoryController interacts with the ProductInventoryService to perform CRUD 
+ * operations on product inventory and provides HTTP endpoints for external clients.
+ */
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using urbanmart.Models;
@@ -34,6 +45,7 @@ public ActionResult<ProductInventory> Get(string id)
 
 
         // POST: api/ProductInventory
+        // Creates a new product inventory entry.
         [HttpPost]
         public ActionResult<ProductInventory> Create(ProductInventory product)
         {
@@ -42,6 +54,7 @@ public ActionResult<ProductInventory> Get(string id)
         }
 
         // PUT: api/ProductInventory/{id}
+        /// Updates an existing product inventory by its ID.
         [HttpPut("{id:length(24)}")]
         public IActionResult Update(string id, ProductInventory productIn)
         {

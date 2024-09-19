@@ -1,3 +1,13 @@
+/*
+ * File: OrdersController.cs
+ * Description: This file defines the OrdersController for managing orders in the UrbanMart application. 
+ *              It provides HTTP endpoints for creating, retrieving, updating, and deleting orders.
+ * Author: Imesh Vitharana
+ * Date: 15/09/24
+ * 
+ * The OrdersController interacts with the OrdersService to perform operations on orders.
+ * It handles CRUD operations and provides endpoints for various order-related actions.
+ */
 using urbanmart.Models;
 using urbanmart.Services;
 using Microsoft.AspNetCore.Mvc;
