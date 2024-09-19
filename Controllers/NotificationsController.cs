@@ -1,3 +1,14 @@
+/*
+ * File: NotificationsController.cs
+ * Description: This file defines the NotificationsController for managing notifications in the UrbanMart application. 
+ *              It provides HTTP endpoints for creating, retrieving, updating, and deleting notifications. 
+ *              Additionally, it includes functionality to mark notifications as read.
+ * Author: Dinithi Mendis
+ * Date:16/09/24
+ * 
+ * The NotificationsController interacts with the NotificationsService to perform operations on notifications.
+ * It handles CRUD operations and provides endpoints for various notification-related actions.
+ */
 using urbanmart.Models;
 using urbanmart.Services;
 using Microsoft.AspNetCore.Mvc;

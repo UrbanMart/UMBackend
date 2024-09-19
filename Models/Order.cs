@@ -1,3 +1,13 @@
+/*
+ * File: Order.cs
+ * Description: This file defines the Order and OrderItem models for the UrbanMart application.
+ *              The Order model represents customer orders, including details such as order items, 
+ *              total amount, order date, and order status. The OrderItem model represents 
+ *              individual items in an order.
+ * Author: Imesh Vitharana
+ * Date: 15/09/24
+ * These models are used to manage and store order data in a MongoDB collection.
+ */
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;

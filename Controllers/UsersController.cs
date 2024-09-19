@@ -1,3 +1,14 @@
+/*
+ * File: UsersController.cs
+ * Description: This file defines the UsersController class for the UrbanMart application. 
+ *              It provides API endpoints for managing users, including operations like 
+ *              fetching, creating, updating, deleting users, and user login authentication.
+ * Author: Darshi Buddhini
+ * Date: 16/09/24
+ * 
+ * The UsersController class uses the UsersService class to perform operations 
+ * on user data stored in a MongoDB database.
+ */
 using urbanmart.Models;
 using urbanmart.Services;
 using Microsoft.AspNetCore.Mvc;

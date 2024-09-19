@@ -1,3 +1,14 @@
+/*
+ * File: UsersService.cs
+ * Description: This file defines the UsersService class for the UrbanMart application, 
+ *              which provides methods for managing user-related operations in the 
+ *              MongoDB database, such as creating, updating, retrieving, and deleting users.
+ * Author: Darshi Buddhini
+ * Date: 16/09/24
+ * 
+ * The UsersService class interacts with the MongoDB collection for user entities 
+ * and provides functionality for authentication, user management, and CRUD operations.
+ */
 using MongoDB.Driver;
 using System.Collections.Generic;
 using urbanmart.Models;
