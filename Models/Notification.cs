@@ -1,3 +1,14 @@
+/*
+ * File: Notification.cs
+ * Description: This file defines the Notification model for the UrbanMart application.
+ *              It represents notifications that can be sent to users, including details such 
+ *              as the notification message, status, timestamp, and related data.
+ * Author: Dinithi Mendis
+ * Date:16/09/24
+ * 
+ * The Notification model is used to manage user notifications within the system, 
+ * and is stored in a MongoDB collection.
+ */
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;

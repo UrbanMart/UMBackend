@@ -1,3 +1,14 @@
+/*
+ * File: ProductsController.cs
+ * Description: This file defines the ProductsController for managing product-related API requests
+ *              in the UrbanMart application. It handles operations such as retrieving, creating, 
+ *              updating, and deleting products.
+ * Author: Imesh Vitharana
+ * Date: 15/09/24
+ * 
+ * The ProductsController interacts with the ProductsService to perform CRUD operations on the 
+ * product catalog and provides HTTP endpoints for external clients to access the product data.
+ */
 using urbanmart.Models;
 using urbanmart.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +28,12 @@ namespace urbanmart.Controllers
         }
 
         // GET: api/Products
+        // Retrieves all products.
         [HttpGet]
         public ActionResult<List<Product>> Get() => _productService.Get();
 
         // GET: api/Products/{id}
+        /// Retrieves a product by its unique ID.
         [HttpGet("{id:length(24)}", Name = "GetProduct")]
         public ActionResult<Product> Get(string id)
         {
