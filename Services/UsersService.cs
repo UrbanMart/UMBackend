@@ -35,5 +35,20 @@ namespace urbanmart.Services
         // Delete a user by Id
         public void Delete(string id) =>
             _users.DeleteOne(user => user.Id == id);
+
+            // Login: Check if email and password match
+        public User Login(string email, string password)
+        {
+            // Find the user by email
+            var user = _users.Find(u => u.Email == email).FirstOrDefault();
+            
+            // Check if user exists and the password matches
+            if (user != null && user.Password == password)
+            {
+                return user; // User is authenticated
+            }
+            
+            return null; // Authentication failed
+        }
     }
 }

@@ -120,5 +120,40 @@ namespace urbanmart.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+
+        // POST: api/Users/login
+        [HttpPost("login")]
+        public ActionResult<User> Login([FromBody] UserLoginDto loginDto)
+        {
+            if (loginDto == null || string.IsNullOrEmpty(loginDto.Email) || string.IsNullOrEmpty(loginDto.Password))
+            {
+                return BadRequest("Invalid login details");
+            }
+
+            try
+            {
+                var user = _userService.Login(loginDto.Email, loginDto.Password);
+
+                if (user == null)
+                {
+                    return Unauthorized("Invalid email or password");
+                }
+
+                return Ok(user); // Return authenticated user data
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+    
+
+    // Data Transfer Object (DTO) for login
+    public class UserLoginDto
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
     }
 }
