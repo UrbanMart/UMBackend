@@ -39,7 +39,7 @@ namespace urbanmart
             services.AddSingleton<UsersService>();
             services.AddSingleton<ProductInventoryService>();
             services.AddSingleton<NotificationsService>();
-
+            services.AddSingleton<VendorFeedbackService>();
             services.AddControllers();
 
             // Read CORS settings from configuration
