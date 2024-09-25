@@ -27,13 +27,13 @@ namespace urbanmart.Controllers
             _productService = productService;
         }
 
-        // GET: api/Products
-        // Retrieves all products.
+        // GET: api/Products?includeInactive=false
+        // Retrieves all products, optionally including inactive ones.
         [HttpGet]
-        public ActionResult<List<Product>> Get() => _productService.Get();
+        public ActionResult<List<Product>> Get([FromQuery] bool includeInactive = false) =>
+            _productService.Get(includeInactive);
 
         // GET: api/Products/{id}
-        /// Retrieves a product by its unique ID.
         [HttpGet("{id:length(24)}", Name = "GetProduct")]
         public ActionResult<Product> Get(string id)
         {
@@ -76,6 +76,34 @@ namespace urbanmart.Controllers
                 return NotFound();
             }
             _productService.Delete(id);
+            return NoContent();
+        }
+
+        // PATCH: api/Products/{id}/activate
+        // Activates a product by its ID.
+        [HttpPatch("{id:length(24)}/activate")]
+        public IActionResult ActivateProduct(string id)
+        {
+            var product = _productService.Get(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            _productService.ActivateProduct(id);
+            return NoContent();
+        }
+
+        // PATCH: api/Products/{id}/deactivate
+        // Deactivates a product by its ID.
+        [HttpPatch("{id:length(24)}/deactivate")]
+        public IActionResult DeactivateProduct(string id)
+        {
+            var product = _productService.Get(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            _productService.DeactivateProduct(id);
             return NoContent();
         }
     }

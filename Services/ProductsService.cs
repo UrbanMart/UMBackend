@@ -15,11 +15,13 @@ namespace urbanmart.Services
             _products = database.GetCollection<Product>("Products");
         }
 
-        // Get all products
-        public List<Product> Get() => _products.Find(product => true).ToList();
+        // Get all products, including filtering by active status
+        public List<Product> Get(bool includeInactive = false) =>
+            _products.Find(product => includeInactive || product.IsActive).ToList();
 
         // Get a product by ID
-        public Product Get(string id) => _products.Find(product => product.Id == id).FirstOrDefault();
+        public Product Get(string id) => 
+            _products.Find(product => product.Id == id).FirstOrDefault();
 
         // Create a new product
         public Product Create(Product product)
@@ -35,5 +37,19 @@ namespace urbanmart.Services
         // Delete a product
         public void Delete(string id) =>
             _products.DeleteOne(product => product.Id == id);
+
+        // Activate a product
+        public void ActivateProduct(string id)
+        {
+            var update = Builders<Product>.Update.Set(p => p.IsActive, true);
+            _products.UpdateOne(product => product.Id == id, update);
+        }
+
+        // Deactivate a product
+        public void DeactivateProduct(string id)
+        {
+            var update = Builders<Product>.Update.Set(p => p.IsActive, false);
+            _products.UpdateOne(product => product.Id == id, update);
+        }
     }
 }
