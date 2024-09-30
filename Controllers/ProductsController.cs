@@ -27,11 +27,11 @@ namespace urbanmart.Controllers
             _productService = productService;
         }
 
-        // GET: api/Products?includeInactive=false
-        // Retrieves all products, optionally including inactive ones.
+        // GET: api/Products?includeInactive=false&vendorId={vendorId}
+        // Retrieves all products, optionally including inactive ones and filtered by vendor ID.
         [HttpGet]
-        public ActionResult<List<Product>> Get([FromQuery] bool includeInactive = false) =>
-            _productService.Get(includeInactive);
+        public ActionResult<List<Product>> Get([FromQuery] bool includeInactive = false, [FromQuery] string vendorId = null) =>
+            _productService.Get(includeInactive, vendorId);
 
         // GET: api/Products/{id}
         [HttpGet("{id:length(24)}", Name = "GetProduct")]

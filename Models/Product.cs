@@ -31,5 +31,9 @@ namespace urbanmart.Models
 
          [BsonElement("IsActive")]
         public bool IsActive { get; set; } = false; // Products are active by default
+
+         [BsonElement("VendorId")] // Reference to the Vendor
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string VendorId { get; set; }
     }
 }
