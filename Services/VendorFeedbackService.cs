@@ -1,6 +1,5 @@
 using MongoDB.Driver;
 using System.Collections.Generic;
-using System.Linq;
 using urbanmart.Models;
 
 namespace urbanmart.Services
@@ -28,6 +27,12 @@ namespace urbanmart.Services
             }
 
             return _feedbacks.Find(feedback => feedback.VendorId == vendorId).ToList();
+        }
+
+        // Get all feedback comments
+        public List<string> GetAllComments()
+        {
+            return _feedbacks.Find(feedback => true).Project(feedback => feedback.Comment).ToList();
         }
 
         // Add new feedback
