@@ -1,8 +1,8 @@
 /*
  * File: Order.cs
  * Description: This file defines the Order and OrderItem models for the UrbanMart application.
- *              The Order model represents customer orders, including details such as order items, 
- *              total amount, order date, and order status. The OrderItem model represents 
+ *              The Order model represents customer orders, including details such as customer ID, 
+ *              order items, total amount, order date, and order status. The OrderItem model represents 
  *              individual items in an order.
  * Author: Imesh Vitharana
  * Date: 15/09/24
@@ -20,6 +20,9 @@ namespace urbanmart.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        [BsonElement("CustomerId")]
+        public string CustomerId { get; set; } 
 
         [BsonElement("CustomerName")]
         public string CustomerName { get; set; }
