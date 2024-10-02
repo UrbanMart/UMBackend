@@ -29,8 +29,8 @@ namespace urbanmart.Models
         [BsonElement("ImageUrl")] // Add image URL field
         public string ImageUrl { get; set; }
 
-         [BsonElement("IsActive")]
-        public bool IsActive { get; set; } = false; // Products are active by default
+        [BsonElement("IsActive")]
+        public bool IsActive { get; set; } = false; 
 
          [BsonElement("VendorId")] // Reference to the Vendor
         [BsonRepresentation(BsonType.ObjectId)]

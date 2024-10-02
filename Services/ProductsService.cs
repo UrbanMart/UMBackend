@@ -15,23 +15,23 @@ namespace urbanmart.Services
             _products = database.GetCollection<Product>("Products");
         }
 
-        // Get all products, including filtering by active status and optionally filtering by vendor ID
-        public List<Product> Get(bool includeInactive = false, string vendorId = null)
+        // Get all products filtered by active status
+        public List<Product> Get(bool? isActive = null)
         {
             var filterBuilder = Builders<Product>.Filter;
-            var filter = includeInactive ? filterBuilder.Empty : filterBuilder.Eq(p => p.IsActive, true);
+            var filter = filterBuilder.Empty;
 
-            if (!string.IsNullOrEmpty(vendorId))
+            // Apply filtering based on isActive parameter
+            if (isActive.HasValue)
             {
-                var vendorFilter = filterBuilder.Eq(p => p.VendorId, vendorId);
-                filter = filter & vendorFilter;
+                filter = filterBuilder.Eq(p => p.IsActive, isActive.Value);
             }
 
             return _products.Find(filter).ToList();
         }
 
         // Get a product by ID
-        public Product Get(string id) => 
+        public Product Get(string id) =>
             _products.Find(product => product.Id == id).FirstOrDefault();
 
         // Create a new product
