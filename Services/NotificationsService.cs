@@ -1,3 +1,15 @@
+/*
+ * File: NotificationsService.cs
+ * Description: This file defines the NotificationsService class for the UrbanMart application, 
+ *              which provides methods for managing notification-related operations in the 
+ *              MongoDB database, such as creating, retrieving, updating, and deleting notifications.
+ * Author: Dinithi Mendis
+ * Date: 16/09/24
+ * 
+ * The NotificationsService class interacts with the MongoDB collection for notification entities 
+ * and provides CRUD functionality for notifications.
+ */
+
 using MongoDB.Driver;
 using System.Collections.Generic;
 using urbanmart.Models;
@@ -15,13 +27,13 @@ namespace urbanmart.Services
             _notifications = database.GetCollection<Notification>("Notifications");
         }
 
-        // Get all notifications
+        // Retrieve all notifications
         public List<Notification> Get() => _notifications.Find(notification => true).ToList();
 
-        // Get a specific notification by ID
+        // Retrieve a notification by its ID
         public Notification Get(string id) => _notifications.Find(notification => notification.Id == id).FirstOrDefault();
 
-        // Create a new notification
+        // Create a new notification in the system
         public Notification Create(Notification notification)
         {
             _notifications.InsertOne(notification);
@@ -32,18 +44,7 @@ namespace urbanmart.Services
         public void Update(string id, Notification updatedNotification) =>
             _notifications.ReplaceOne(notification => notification.Id == id, updatedNotification);
 
-        // Mark a notification as read
-        public void MarkAsRead(string id)
-        {
-            var notification = Get(id);
-            if (notification != null)
-            {
-                notification.IsRead = true;
-                Update(id, notification);
-            }
-        }
-
-        // Delete a notification
+        // Delete a notification by ID
         public void Delete(string id) =>
             _notifications.DeleteOne(notification => notification.Id == id);
     }

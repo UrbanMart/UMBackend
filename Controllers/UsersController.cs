@@ -9,6 +9,7 @@
  * The UsersController class uses the UsersService class to perform operations 
  * on user data stored in a MongoDB database.
  */
+
 using urbanmart.Models;
 using urbanmart.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +22,12 @@ namespace urbanmart.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UsersService _userService;
+        private readonly NotificationsService _notificationsService;
 
-        public UsersController(UsersService userService)
+        public UsersController(UsersService userService, NotificationsService notificationsService)
         {
             _userService = userService;
+            _notificationsService = notificationsService;
         }
 
         // GET: api/Users
@@ -74,7 +77,29 @@ namespace urbanmart.Controllers
 
             try
             {
+                // Create a new user
                 _userService.Create(user);
+
+                // Check if the user is a customer before notifying CSR(s)
+                if (user.Role == "Customer") 
+                {
+                    // Find CSR(s) in the system to notify
+                    var csrs = _userService.GetUsersByRole("CSR");
+                    foreach (var csr in csrs)
+                    {
+                        // Create a notification for each CSR about the new customer account
+                        Notification notification = new Notification
+                        {
+                            UserId = csr.Id, 
+                            Message = $"New customer account created for {user.Email}. Approval is required.",
+                            IsRead = false,
+                            Type = "NewCustomer" // Notification type for new customer account
+                        };
+                        _notificationsService.Create(notification);
+                    }
+                }
+
+                // Return the newly created user details
                 return CreatedAtRoute("GetUser", new { id = user.Id }, user);
             }
             catch
@@ -132,7 +157,6 @@ namespace urbanmart.Controllers
             }
         }
 
-
         // POST: api/Users/login
         [HttpPost("login")]
         public ActionResult<User> Login([FromBody] UserLoginDto loginDto)
@@ -158,13 +182,47 @@ namespace urbanmart.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-    
 
-    // Data Transfer Object (DTO) for login
-    public class UserLoginDto
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
+        // CSR approves customer account
+        [HttpPut("{id:length(24)}/approve")]
+        public IActionResult ApproveCustomer(string id)
+        {
+            try
+            {
+                var user = _userService.Get(id);
+
+                if (user == null)
+                {
+                    return NotFound("User not found");
+                }
+
+                // Activate the user
+                user.IsActive = true;
+                _userService.Update(id, user);
+
+                // Notify the customer that their account is approved
+                Notification notification = new Notification
+                {
+                    UserId = user.Id, // Customer user ID
+                    Message = "Your account has been approved. You can now log in to the mobile app.",
+                    IsRead = false,
+                    Type = "AccountApproval" // Notification type for account approval
+                };
+                _notificationsService.Create(notification);
+
+                return NoContent(); // Successful approval
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // Data Transfer Object (DTO) for login
+        public class UserLoginDto
+        {
+            public string Email { get; set; }
+            public string Password { get; set; }
+        }
     }
 }
