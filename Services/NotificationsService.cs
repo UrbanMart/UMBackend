@@ -30,6 +30,13 @@ namespace urbanmart.Services
         // Retrieve all notifications
         public List<Notification> Get() => _notifications.Find(notification => true).ToList();
 
+        // Retrieve notifications by UserId
+        public List<Notification> GetByUserId(string userId)
+        {
+            // Fetch notifications where the UserId matches the provided userId
+            return _notifications.Find(notification => notification.UserId == userId).ToList();
+        }
+
         // Retrieve a notification by its ID
         public Notification Get(string id) => _notifications.Find(notification => notification.Id == id).FirstOrDefault();
 
