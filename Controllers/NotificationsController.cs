@@ -20,74 +20,70 @@ namespace urbanmart.Controllers
     [ApiController]
     public class NotificationsController : ControllerBase
     {
-        private readonly NotificationsService _notificationService; // Updated service name
+        private readonly NotificationsService _notificationsService;
 
-        public NotificationsController(NotificationsService notificationService) // Updated parameter type
+        public NotificationsController(NotificationsService notificationsService)
         {
-            _notificationService = notificationService;
+            _notificationsService = notificationsService;
         }
 
         // GET: api/notifications
         [HttpGet]
-        public ActionResult<List<Notification>> Get() => _notificationService.Get();
+        public ActionResult<List<Notification>> GetAll()
+        {
+            var notifications = _notificationsService.Get();
+            return Ok(notifications);
+        }
 
         // GET: api/notifications/{id}
-        [HttpGet("{id:length(24)}", Name = "GetNotification")]
+        [HttpGet("{id:length(24)}")]
         public ActionResult<Notification> Get(string id)
         {
-            var notification = _notificationService.Get(id);
+            var notification = _notificationsService.Get(id);
             if (notification == null)
             {
-                return NotFound();
+                return NotFound("Notification not found");
             }
-            return notification;
+            return Ok(notification);
         }
 
         // POST: api/notifications
         [HttpPost]
         public ActionResult<Notification> Create(Notification notification)
         {
-            _notificationService.Create(notification);
+            if (notification == null)
+            {
+                return BadRequest("Notification is null");
+            }
+            _notificationsService.Create(notification);
             return CreatedAtRoute("GetNotification", new { id = notification.Id }, notification);
         }
 
-        // PUT: api/notifications/{id}
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Notification notificationIn)
-        {
-            var notification = _notificationService.Get(id);
-            if (notification == null)
-            {
-                return NotFound();
-            }
-            _notificationService.Update(id, notificationIn);
-            return NoContent();
-        }
-
-        // PATCH: api/notifications/{id}/markasread
-        [HttpPatch("{id:length(24)}/markasread")]
+        // PUT: api/notifications/{id}/read
+        [HttpPut("{id:length(24)}/read")]
         public IActionResult MarkAsRead(string id)
         {
-            var notification = _notificationService.Get(id);
+            var notification = _notificationsService.Get(id);
             if (notification == null)
             {
-                return NotFound();
+                return NotFound("Notification not found");
             }
-            _notificationService.MarkAsRead(id);
-            return NoContent();
+            notification.IsRead = true;
+            _notificationsService.Update(id, notification);
+            return NoContent(); // Successful update
         }
 
         // DELETE: api/notifications/{id}
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
-            var notification = _notificationService.Get(id);
+            var notification = _notificationsService.Get(id);
             if (notification == null)
             {
-                return NotFound();
+                return NotFound("Notification not found");
             }
-            _notificationService.Delete(id);
-            return NoContent();
+            _notificationsService.Delete(id);
+            return NoContent(); // Successful deletion
         }
     }
 }

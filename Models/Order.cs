@@ -25,36 +25,42 @@ namespace urbanmart.Models
         public string CustomerId { get; set; } 
 
         [BsonElement("CustomerName")]
-        public string CustomerName { get; set; }
+        public string CustomerName { get; set; } // Name of the customer who placed the order
 
         [BsonElement("OrderDate")]
-        public DateTime OrderDate { get; set; }
+        public DateTime OrderDate { get; set; } // Date when the order was placed
 
         [BsonElement("TotalAmount")]
-        public decimal TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; } // Total amount for the order
 
         [BsonElement("OrderItems")]
-        public List<OrderItem> OrderItems { get; set; }
+        public List<OrderItem> OrderItems { get; set; } // List of items in the order
 
         [BsonElement("Status")]
-        public string Status { get; set; }
+        public string Status { get; set; } // Status of the order (e.g., "Processing", "Partially Delivered", "Delivered", "Cancelled")
     }
 
     public class OrderItem
     {
         [BsonElement("ProductId")]
-        public string ProductId { get; set; }
+        public string ProductId { get; set; } // ID of the product
 
         [BsonElement("ProductName")]
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } // Name of the product
+
+        [BsonElement("VendorId")]
+        public string VendorId { get; set; } // ID of the vendor who added the product
 
         [BsonElement("Quantity")]
-        public int Quantity { get; set; }
+        public int Quantity { get; set; } // Quantity of the product ordered
 
         [BsonElement("UnitPrice")]
-        public decimal UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; } // Unit price of the product
 
         [BsonElement("TotalPrice")]
-        public decimal TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; } // Total price for this order item (Quantity * UnitPrice)
+
+        [BsonElement("Status")]
+        public string Status { get; set; } // Status of the item (e.g., "Created", "Delivered")
     }
 }

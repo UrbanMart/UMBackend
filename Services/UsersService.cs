@@ -32,6 +32,9 @@ namespace urbanmart.Services
         // Get a user by Id
         public User Get(string id) => _users.Find(user => user.Id == id).FirstOrDefault();
 
+        // Retrieve users by their role (CSR)
+        public List<User> GetUsersByRole(string role) => _users.Find(user => user.Role == role).ToList();
+
         // Create a new user
         public User Create(User user)
         {
@@ -39,7 +42,7 @@ namespace urbanmart.Services
             return user;
         }
 
-        // Update an existing user
+        // Update an existing user (when activating an account)
         public void Update(string id, User updatedUser) =>
             _users.ReplaceOne(user => user.Id == id, updatedUser);
 
@@ -47,7 +50,7 @@ namespace urbanmart.Services
         public void Delete(string id) =>
             _users.DeleteOne(user => user.Id == id);
 
-            // Login: Check if email and password match
+        // Login: Check if email and password match
         public User Login(string email, string password)
         {
             // Find the user by email
