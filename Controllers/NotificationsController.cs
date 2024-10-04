@@ -35,6 +35,18 @@ namespace urbanmart.Controllers
             return Ok(notifications);
         }
 
+        // GET: api/notifications/user/{userId}
+        [HttpGet("user/{userId:length(24)}")]
+        public ActionResult<List<Notification>> GetByUserId(string userId)
+        {
+            var notifications = _notificationsService.GetByUserId(userId);
+            if (notifications == null || notifications.Count == 0)
+            {
+                return NotFound("Notifications not found");
+            }
+            return Ok(notifications);
+        }
+
         // GET: api/notifications/{id}
         [HttpGet("{id:length(24)}")]
         public ActionResult<Notification> Get(string id)
