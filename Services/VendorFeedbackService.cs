@@ -28,6 +28,11 @@ namespace urbanmart.Services
 
             return _feedbacks.Find(feedback => feedback.VendorId == vendorId).ToList();
         }
+        // Get all feedbacks with complete details
+        public List<VendorFeedback> GetAllFeedbacks()
+        {
+            return _feedbacks.Find(feedback => true).ToList();
+        }
 
         // Get all feedback comments
         public List<string> GetAllComments()
