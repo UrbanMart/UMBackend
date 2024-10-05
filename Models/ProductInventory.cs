@@ -31,7 +31,8 @@ namespace urbanmart.Models
         [BsonElement("ReorderLevel")]
         public int ReorderLevel { get; set; }
 
-        [BsonElement("VendorId")]
+        [BsonElement("VendorId")] // Reference to the Vendor
+        [BsonRepresentation(BsonType.ObjectId)]
         public string VendorId { get; set; }
     }
 }
