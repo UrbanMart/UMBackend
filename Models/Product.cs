@@ -26,14 +26,13 @@ namespace urbanmart.Models
 
         public string Category { get; set; }
 
-        [BsonElement("ImageUrl")] // Add image URL field
+        [BsonElement("ImageUrl")]
         public string ImageUrl { get; set; }
 
         [BsonElement("IsActive")]
         public bool IsActive { get; set; } = false; 
 
-         [BsonElement("VendorId")] // Reference to the Vendor
-        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("VendorId")] 
         public string VendorId { get; set; }
     }
 }
