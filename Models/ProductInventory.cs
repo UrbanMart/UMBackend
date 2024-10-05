@@ -2,7 +2,7 @@
  * File: ProductInventory.cs
  * Description: This file defines the ProductInventory model for the UrbanMart application. 
  *              It represents the inventory for products, including properties like 
- *              name, price, category, quantity, reorder level, and vendor information.
+ *              name, quantity, reorder level, and vendor information.
  * Author: Darshi Buddhini
  * Date: 16/09/24
  * 
@@ -23,11 +23,6 @@ namespace urbanmart.Models
         [BsonElement("Name")]
         public string Name { get; set; }
 
-        [BsonElement("Price")]
-        public decimal Price { get; set; }
-
-        [BsonElement("Category")]
-        public string Category { get; set; }
         // The quantity of the product available in the inventory.
         [BsonElement("Quantity")]
         public int Quantity { get; set; }
@@ -38,7 +33,5 @@ namespace urbanmart.Models
 
         [BsonElement("VendorId")]
         public string VendorId { get; set; }
-
-      
     }
 }

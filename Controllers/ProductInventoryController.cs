@@ -31,18 +31,17 @@ namespace urbanmart.Controllers
         [HttpGet]
         public ActionResult<List<ProductInventory>> Get() => _productInventoryService.Get();
 
-       // GET: api/ProductInventory/{id}
-[HttpGet("{id:length(24)}", Name = "GetProductInventory")]
-public ActionResult<ProductInventory> Get(string id)
-{
-    var product = _productInventoryService.Get(id);
-    if (product == null)
-    {
-        return NotFound();
-    }
-    return product;
-}
-
+        // GET: api/ProductInventory/{id}
+        [HttpGet("{id:length(24)}", Name = "GetProductInventory")]
+        public ActionResult<ProductInventory> Get(string id)
+        {
+            var product = _productInventoryService.Get(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return product;
+        }
 
         // POST: api/ProductInventory
         // Creates a new product inventory entry.
@@ -50,7 +49,7 @@ public ActionResult<ProductInventory> Get(string id)
         public ActionResult<ProductInventory> Create(ProductInventory product)
         {
             _productInventoryService.Create(product);
-            return CreatedAtRoute("GetProduct", new { id = product.Id }, product);
+            return CreatedAtRoute("GetProductInventory", new { id = product.Id }, product);
         }
 
         // PUT: api/ProductInventory/{id}
