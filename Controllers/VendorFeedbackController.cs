@@ -27,6 +27,13 @@ namespace urbanmart.Controllers
             }
             return feedbacks;
         }
+        // GET: api/VendorFeedback/all
+        [HttpGet("all", Name = "GetAllFeedbacks")]
+        public ActionResult<List<VendorFeedback>> GetAllFeedbacks()
+        {
+            var feedbacks = _feedbackService.GetAllFeedbacks();
+            return feedbacks;
+        }
 
         // GET: api/VendorFeedback/comments
         [HttpGet("comments", Name = "GetAllComments")]
