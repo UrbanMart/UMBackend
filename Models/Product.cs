@@ -32,7 +32,7 @@ namespace urbanmart.Models
         [BsonElement("IsActive")]
         public bool IsActive { get; set; } = false; 
 
-        [BsonElement("VendorId")] 
+        [BsonRepresentation(BsonType.ObjectId)]
         public string VendorId { get; set; }
     }
 }
