@@ -36,6 +36,17 @@ namespace urbanmart.Controllers
             return Ok(products);
         }
 
+        [HttpGet("{id:length(24)}", Name = "GetProduct")]
+        public ActionResult<Product> GetById(string id)
+        {
+            var product = _productService.Get(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
+
         // POST: api/Products
         [HttpPost]
         public ActionResult<Product> Create(Product product)
