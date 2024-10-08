@@ -1,3 +1,11 @@
+/*
+ * File: VendorFeedbackController.cs
+ * Description: This file defines the VendorFeedbackController class for the UrbanMart application. 
+ *              It provides API endpoints for managing Feedback, including operations like 
+ *              fetching, creating, updating, deleting Feedback.
+ * Author: Darshi Buddhini
+ * Date: 28/09/24
+ */
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using urbanmart.Models;
