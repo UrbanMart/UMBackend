@@ -1,3 +1,15 @@
+/*
+ * File: ProductInventoryService.cs
+ * Description: This file defines the ProductInventoryService class for managing product inventories 
+ *              in the UrbanMart application. It handles operations such as retrieving, creating, updating,
+ *              and deleting products along with their inventory levels.
+ *              Additionally, it includes methods for updating inventory quantities and retrieving low-stock items.
+ * Author: Darshi Buddhini
+ * Date: 16/09/24
+ * The ProductInventoryService interacts with the MongoDB database to manage the inventory of products, 
+ * ensuring that stock levels are maintained, and low-stock items are easily identified.
+ */
+
 using MongoDB.Driver;
 using System.Collections.Generic;
 using urbanmart.Models;
