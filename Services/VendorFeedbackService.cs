@@ -1,3 +1,13 @@
+/*
+ * File: VendorFeedbackService.cs
+ * Description: This file defines the VendorFeedbackService class for managing vendor feedback-related 
+ *              operations in the UrbanMart application. It handles retrieving, creating, and updating 
+ *              feedback for vendors, while ensuring the vendor is a valid user.
+ * Author: Darshi Buddhini
+ * Date: 22/09/24
+ * The VendorFeedbackService interacts with MongoDB collections to manage vendor feedback, 
+ * allowing the retrieval of feedback by vendor, as well as adding or updating comments.
+ */
 using MongoDB.Driver;
 using System.Collections.Generic;
 using urbanmart.Models;
