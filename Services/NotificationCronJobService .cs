@@ -39,8 +39,8 @@ namespace urbanmart.Services
 
                 _logger.LogInformation("Notification sent at: {time}", DateTimeOffset.Now);
                 
-                // Wait for 1 minute (60000 milliseconds)
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                 // Wait for 1 day (86400000 milliseconds)
+                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
             }
         }
     }
