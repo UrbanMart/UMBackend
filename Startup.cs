@@ -41,6 +41,7 @@ namespace urbanmart
             services.AddSingleton<NotificationsService>();
             services.AddSingleton<VendorFeedbackService>();
             services.AddControllers();
+            services.AddSingleton<NotificationJob>();
 
             // Read CORS settings from configuration
             var allowedOrigins = Configuration["CORS:AllowedOrigins"]?.Split(',');
