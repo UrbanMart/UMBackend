@@ -1,3 +1,14 @@
+/*
+ * File: ProductsService.cs
+ * Description: This file defines the ProductsService class for managing product-related operations 
+ *              in the UrbanMart application. It handles retrieving, creating, updating, and deleting 
+ *              products as well as activating and deactivating product listings.
+ * Author: Imesh Vitharana
+ * Date: 15/09/24
+ * The ProductsService interacts with the MongoDB database to perform CRUD operations on products,
+ * and allows filtering of products based on their active status. It also provides methods to 
+ * activate or deactivate products as needed.
+ */
 using MongoDB.Driver;
 using System.Collections.Generic;
 using urbanmart.Models;
