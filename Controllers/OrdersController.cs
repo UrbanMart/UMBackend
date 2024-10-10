@@ -175,6 +175,24 @@ namespace urbanmart.Controllers
                 return NotFound();
             }
             _orderService.MarkItemAsDelivered(orderId, productId, vendorId);
+
+            // After marking, check the order status
+            var updatedOrder = _orderService.Get(orderId); // Retrieve the updated order status
+
+            // Check if the order status is now "Delivered"
+            if (updatedOrder.Status == "Delivered")
+            {
+                // Notify customer about the delivery
+                Notification notification = new Notification
+                {
+                    UserId = updatedOrder.CustomerId, // Get the customer ID from the order
+                    Message = $"Your order {orderId} has been delivered.",
+                    IsRead = false,
+                    Type = "Delivery" // Notification type for delivery
+                };
+                _notificationsService.Create(notification);
+            }
+
             return NoContent();
         }
     }
