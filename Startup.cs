@@ -41,6 +41,7 @@ namespace urbanmart
             services.AddSingleton<NotificationsService>();
             services.AddSingleton<VendorFeedbackService>();
             services.AddControllers();
+            services.AddSingleton<InventoryCheckService>();
             services.AddHostedService<NotificationCronJobService>();
 
             // Read CORS settings from configuration

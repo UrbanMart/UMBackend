@@ -2,46 +2,63 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using urbanmart.Models;
-using urbanmart.Services;
 
 namespace urbanmart.Services
 {
-    public class NotificationCronJobService : BackgroundService
+    public class NotificationCronJobService : IHostedService, IDisposable
     {
+        private Timer _timer;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<NotificationCronJobService> _logger;
-        private readonly NotificationsService _notificationsService;
 
-        public NotificationCronJobService(ILogger<NotificationCronJobService> logger, NotificationsService notificationsService)
+        public NotificationCronJobService(IServiceProvider serviceProvider, ILogger<NotificationCronJobService> logger)
         {
+            _serviceProvider = serviceProvider;
             _logger = logger;
-            _notificationsService = notificationsService;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            _logger.LogInformation("NotificationCronJobService started at {time}", DateTime.UtcNow);
+
+            // Run every 1 minute
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+            return Task.CompletedTask;
+        }
+
+        private void DoWork(object state)
+        {
+            try
             {
-                // Create a new notification
-                var notification = new Notification
+                _logger.LogInformation("Inventory check task started at {time}", DateTime.UtcNow);
+
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    UserId = "1234",
-                    Message = "This is a scheduled notification.",
-                    IsRead = false,
-                    CreatedAt = DateTime.UtcNow,
-                    Type = "General",
-                    RelatedOrderId = null
-                };
+                    var inventoryCheckService = scope.ServiceProvider.GetRequiredService<InventoryCheckService>();
+                    inventoryCheckService.CheckAndProcessOrders();
+                }
 
-                // Post the notification to the database
-                _notificationsService.Create(notification);
-
-                _logger.LogInformation("Notification sent at: {time}", DateTimeOffset.Now);
-                
-                 // Wait for 1 day (86400000 milliseconds)
-                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+                _logger.LogInformation("Inventory check task completed at {time}", DateTime.UtcNow);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during inventory check task at {time}", DateTime.UtcNow);
+            }
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("NotificationCronJobService stopped at {time}", DateTime.UtcNow);
+
+            _timer?.Change(Timeout.Infinite, 0);
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }
