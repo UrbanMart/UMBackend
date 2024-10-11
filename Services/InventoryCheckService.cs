@@ -51,8 +51,19 @@ namespace urbanmart.Services
                 {
                     _logger.LogInformation("Product ID: {productId} status changed from {oldStatus} to {newStatus}.",
                         product.Id, isActiveBefore, product.IsActive);
+
                     _products.ReplaceOne(p => p.Id == product.Id, product);
+
+                    // If the status changed from active (true) to inactive (false), send a restock notification
+                    if (isActiveBefore && !product.IsActive)
+                    {
+                        _logger.LogWarning("Product ID: {productId} became inactive due to low inventory. Notifying Vendor ID: {vendorId}.",
+                            product.Id, productInventory.VendorId);
+
+                        SendRestockNotification(productInventory.VendorId, product.Name, productInventory.Quantity);
+                    }
                 }
+
             }
 
             // Process orders with unchecked quantities
