@@ -21,7 +21,7 @@ namespace urbanmart.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("NotificationCronJobService started at {time}", DateTime.UtcNow);
+            _logger.LogInformation("NotificationCronJobService started at {time}", DateTime.Now);
 
             // Run every 1 minute
             _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
@@ -32,7 +32,7 @@ namespace urbanmart.Services
         {
             try
             {
-                _logger.LogInformation("Inventory check task started at {time}", DateTime.UtcNow);
+                _logger.LogInformation("Inventory check task started at {time}", DateTime.Now);
 
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -40,17 +40,17 @@ namespace urbanmart.Services
                     inventoryCheckService.CheckAndProcessOrders();
                 }
 
-                _logger.LogInformation("Inventory check task completed at {time}", DateTime.UtcNow);
+                _logger.LogInformation("Inventory check task completed at {time}", DateTime.Now);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred during inventory check task at {time}", DateTime.UtcNow);
+                _logger.LogError(ex, "Error occurred during inventory check task at {time}", DateTime.Now);
             }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("NotificationCronJobService stopped at {time}", DateTime.UtcNow);
+            _logger.LogInformation("NotificationCronJobService stopped at {time}", DateTime.Now);
 
             _timer?.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
