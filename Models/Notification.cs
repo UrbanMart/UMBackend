@@ -31,7 +31,7 @@ namespace urbanmart.Models
         public bool IsRead { get; set; } = false; // Indicates if the notification has been read
 
         [BsonElement("CreatedAt")]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Timestamp of notification creation
+        public DateTime CreatedAt { get; set; } = DateTime.Now; // Timestamp of notification creation
 
         [BsonElement("Type")]
         public string Type { get; set; } // Type of notification (e.g., "Order", "Cancellation", "Account Approval")

@@ -26,7 +26,7 @@ namespace urbanmart.Services
 
         public void CheckAndProcessOrders()
         {
-            _logger.LogInformation("Starting inventory check process at {time}", DateTime.UtcNow);
+            _logger.LogInformation("Starting inventory check process at {time}", DateTime.Now);
 
             // Get all orders where IsQuantityChecked is false
             var ordersToCheck = _orders.Find(order => !order.IsQuantityChecked).ToList();
@@ -76,7 +76,7 @@ namespace urbanmart.Services
                 _logger.LogInformation("Order ID: {orderId} marked as Quantity Checked.", order.Id);
             }
 
-            _logger.LogInformation("Inventory check process completed at {time}", DateTime.UtcNow);
+            _logger.LogInformation("Inventory check process completed at {time}", DateTime.Now);
         }
 
         private void SendRestockNotification(string vendorId, string productName, int currentQuantity)
@@ -86,7 +86,7 @@ namespace urbanmart.Services
                 UserId = vendorId,
                 Message = $"Please restock {productName}. Current inventory is {currentQuantity}.",
                 Type = "Restock",
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 IsRead = false
             };
 
