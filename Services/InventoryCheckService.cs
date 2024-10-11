@@ -9,6 +9,7 @@ namespace urbanmart.Services
 {
     public class InventoryCheckService
     {
+        private readonly IMongoCollection<Product> _products; 
         private readonly IMongoCollection<Order> _orders;
         private readonly IMongoCollection<ProductInventory> _productInventories;
         private readonly NotificationsService _notificationsService;
@@ -18,6 +19,7 @@ namespace urbanmart.Services
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
+            _products = database.GetCollection<Product>("Products");
             _orders = database.GetCollection<Order>("Orders");
             _productInventories = database.GetCollection<ProductInventory>("ProductInventory");
             _notificationsService = notificationsService;
@@ -27,6 +29,37 @@ namespace urbanmart.Services
         public void CheckAndProcessOrders()
         {
             _logger.LogInformation("Starting inventory check process at {time}", DateTime.Now);
+
+            // Fetch all products and inventories
+            var allProducts = _products.Find(product => true).ToList();
+            var allProductInventories = _productInventories.Find(pi => true).ToList();
+
+            // Update IsActive status based on inventory levels
+            foreach (var productInventory in allProductInventories)
+            {
+                var product = allProducts.FirstOrDefault(p => p.Id == productInventory.ProductId);
+                if (product != null)
+                {
+                    bool isActiveBefore = product.IsActive;
+                    product.IsActive = productInventory.Quantity > productInventory.ReorderLevel;
+
+                    // Log the change in the IsActive status
+                    if (product.IsActive != isActiveBefore)
+                    {
+                        _logger.LogInformation("Product ID: {productId} IsActive status changed from {oldStatus} to {newStatus}",
+                            product.Id, isActiveBefore, product.IsActive);
+                    }
+
+                    // Update the product status in the database
+                    _products.ReplaceOne(p => p.Id == product.Id, product);
+                    _logger.LogInformation("Updated Product ID: {productId} in database with IsActive = {isActive}.", product.Id, product.IsActive);
+                }
+                else
+                {
+                    _logger.LogWarning("Product ID: {productId} not found for inventory ID: {inventoryId}.",
+                        productInventory.ProductId, productInventory.Id);
+                }
+            }
 
             // Get all orders where IsQuantityChecked is false
             var ordersToCheck = _orders.Find(order => !order.IsQuantityChecked).ToList();
@@ -39,7 +72,7 @@ namespace urbanmart.Services
 
                 foreach (var item in order.OrderItems)
                 {
-                    var productInventory = _productInventories.Find(pi => pi.ProductId == item.ProductId).FirstOrDefault();
+                    var productInventory = allProductInventories.FirstOrDefault(pi => pi.ProductId == item.ProductId);
 
                     if (productInventory != null)
                     {
@@ -48,10 +81,14 @@ namespace urbanmart.Services
 
                         // Deduct quantity from ProductInventory
                         productInventory.Quantity -= item.Quantity;
-                        _productInventories.ReplaceOne(pi => pi.Id == productInventory.ProductId, productInventory);
 
-                        _logger.LogInformation("Updated Product Inventory for Product ID: {productId}, New Quantity: {newQuantity}",
-                            item.ProductId, productInventory.Quantity);
+                        // Log the updated quantity
+                        _logger.LogInformation("Deducted {quantity} from Product ID: {productId}. New Quantity: {newQuantity}.",
+                            item.Quantity, item.ProductId, productInventory.Quantity);
+
+                        // Update the inventory in the database
+                        _productInventories.ReplaceOne(pi => pi.ProductId == productInventory.ProductId, productInventory);
+                        _logger.LogInformation("Updated Product Inventory for Product ID: {productId} in database.", item.ProductId);
 
                         // If the quantity falls below ReorderLevel, send a restock notification
                         if (productInventory.Quantity <= productInventory.ReorderLevel)
@@ -72,7 +109,6 @@ namespace urbanmart.Services
                 // Mark order as Quantity Checked
                 order.IsQuantityChecked = true;
                 _orders.ReplaceOne(o => o.Id == order.Id, order);
-
                 _logger.LogInformation("Order ID: {orderId} marked as Quantity Checked.", order.Id);
             }
 
