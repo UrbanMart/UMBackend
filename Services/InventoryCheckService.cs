@@ -29,43 +29,7 @@ namespace urbanmart.Services
         public void CheckAndProcessOrders()
         {
             _logger.LogInformation("Inventory check process started at {time}", DateTime.Now);
-
-            // Fetch all products and inventories
-            var allProducts = _products.Find(_ => true).ToList();
-            var allProductInventories = _productInventories.Find(_ => true).ToList();
-
-            // Update IsActive status based on inventory levels
-            foreach (var productInventory in allProductInventories)
-            {
-                var product = allProducts.FirstOrDefault(p => p.Id == productInventory.ProductId);
-                if (product == null)
-                {
-                    _logger.LogWarning("Product not found for Inventory ID: {inventoryId}.", productInventory.Id);
-                    continue;
-                }
-
-                bool isActiveBefore = product.IsActive;
-                product.IsActive = productInventory.Quantity > productInventory.ReorderLevel;
-
-                if (product.IsActive != isActiveBefore)
-                {
-                    _logger.LogInformation("Product ID: {productId} status changed from {oldStatus} to {newStatus}.",
-                        product.Id, isActiveBefore, product.IsActive);
-
-                    _products.ReplaceOne(p => p.Id == product.Id, product);
-
-                    // If the status changed from active (true) to inactive (false), send a restock notification
-                    if (isActiveBefore && !product.IsActive)
-                    {
-                        _logger.LogWarning("Product ID: {productId} became inactive due to low inventory. Notifying Vendor ID: {vendorId}.",
-                            product.Id, productInventory.VendorId);
-
-                        SendRestockNotification(productInventory.VendorId, product.Name, productInventory.Quantity);
-                    }
-                }
-
-            }
-
+            
             // Process orders with unchecked quantities
             var ordersToCheck = _orders.Find(order => !order.IsQuantityChecked).ToList();
             _logger.LogInformation("Processing {orderCount} orders with unchecked quantities.", ordersToCheck.Count);
@@ -74,7 +38,7 @@ namespace urbanmart.Services
             {
                 foreach (var item in order.OrderItems)
                 {
-                    var productInventory = allProductInventories.FirstOrDefault(pi => pi.ProductId == item.ProductId);
+                    var productInventory = _productInventories.Find(pi => pi.VendorId == item.VendorId && pi.ProductId == item.ProductId).FirstOrDefault();
                     if (productInventory == null)
                     {
                         _logger.LogError("Product ID: {productId} not found in inventory for Order ID: {orderId}.", item.ProductId, order.Id);
@@ -87,13 +51,8 @@ namespace urbanmart.Services
 
                     if (productInventory.Quantity <= productInventory.ReorderLevel)
                     {
-                        var product = allProducts.FirstOrDefault(p => p.Id == productInventory.ProductId);
-                        if (product != null)
-                        {
-                            product.IsActive = false;
-                            _products.ReplaceOne(p => p.Id == product.Id, product);
-                        }
-
+                       _logger.LogWarning("Product ID: {productId} has low inventory ({quantity}). Notifying Vendor ID: {vendorId}",
+                        item.ProductId, productInventory.Quantity, productInventory.VendorId);
                         // Send restock notification
                         SendRestockNotification(productInventory.VendorId, productInventory.Name, productInventory.Quantity);
                     }
