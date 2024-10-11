@@ -43,6 +43,18 @@ namespace urbanmart.Controllers
             return product;
         }
 
+        // GET: api/ProductInventory/product/{productId}
+        [HttpGet("product/{productId:length(24)}", Name = "GetProductInventoryByProductId")]
+        public ActionResult<ProductInventory> GetByProductId(string productId)
+        {
+            var product = _productInventoryService.GetByProductId(productId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return product;
+        }
+
         // POST: api/ProductInventory
         // Creates a new product inventory entry.
         [HttpPost]

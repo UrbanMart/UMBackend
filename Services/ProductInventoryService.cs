@@ -33,6 +33,10 @@ namespace urbanmart.Services
         // Get a product by ID
         public ProductInventory Get(string id) => _productInventory.Find(product => product.Id == id).FirstOrDefault();
 
+        // Get a product by productId (assuming productId is a field in ProductInventory)
+        public ProductInventory GetByProductId(string productId) => 
+            _productInventory.Find(product => product.ProductId == productId).FirstOrDefault();
+
         // Create a new product with inventory
         public ProductInventory Create(ProductInventory product)
         {
