@@ -84,13 +84,13 @@ namespace urbanmart.Controllers
                 order.Status = "Cancellation Requested";
                 _orderService.Update(id, order);
 
-                // Notify CSR(s) about the cancellation request
-                var csrs = _usersService.GetUsersByRole("CSR"); // Call the method from UserService
-                foreach (var csr in csrs)
+                // Notify both CSR(s) and Administrator about the cancellation request
+                var usersToNotify = _usersService.GetUsersByRoles(new List<string> { "CSR", "Administrator" });
+                foreach (var user in usersToNotify)
                 {
                     Notification notification = new Notification
                     {
-                        UserId = csr.Id,
+                        UserId = user.Id,
                         Message = $"Cancellation requested for order {id}.",
                         IsRead = false,
                         Type = "OrderCancellation" // Notification type for order cancellation
