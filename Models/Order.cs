@@ -38,6 +38,9 @@ namespace urbanmart.Models
 
         [BsonElement("Status")]
         public string Status { get; set; } // Status of the order (e.g., "Processing", "Partially Delivered", "Delivered", "Cancelled")
+        
+        [BsonElement("IsQuantityChecked")]
+        public bool IsQuantityChecked { get; set; } = false; // Indicates if the quantity of the order has been checked
     }
 
     public class OrderItem

@@ -20,6 +20,9 @@ namespace urbanmart.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        [BsonElement("ProductId")]
+        public string ProductId { get; set; }
+
         [BsonElement("Name")]
         public string Name { get; set; }
 
