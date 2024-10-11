@@ -40,6 +40,7 @@ namespace urbanmart
             services.AddSingleton<ProductInventoryService>();
             services.AddSingleton<NotificationsService>();
             services.AddSingleton<VendorFeedbackService>();
+            services.AddSingleton<CronJobSettingService>();
             services.AddControllers();
             services.AddSingleton<InventoryCheckService>();
             services.AddHostedService<NotificationCronJobService>();

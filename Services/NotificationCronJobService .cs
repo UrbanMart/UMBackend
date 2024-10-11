@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using urbanmart.Models;
 
 namespace urbanmart.Services
 {
@@ -12,20 +14,63 @@ namespace urbanmart.Services
         private Timer _timer;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<NotificationCronJobService> _logger;
+        private readonly IMongoCollection<CronJobSetting> _cronJobSettingsCollection;
+        private int _intervalInMinutes;
 
-        public NotificationCronJobService(IServiceProvider serviceProvider, ILogger<NotificationCronJobService> logger)
+        public NotificationCronJobService(IServiceProvider serviceProvider, ILogger<NotificationCronJobService> logger, IDatabaseSettings settings)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
+
+            // Initialize MongoDB collection for CronJobSettings
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+            _cronJobSettingsCollection = database.GetCollection<CronJobSetting>("CronJobSettings");
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("NotificationCronJobService started at {time}", DateTime.Now);
 
-            // Run every 1 minute
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
-            return Task.CompletedTask;
+            // Fetch the interval from the database
+            await FetchIntervalFromDatabaseAsync();
+
+            // If interval is fetched successfully, start the timer
+            if (_intervalInMinutes > 0)
+            {
+                var interval = TimeSpan.FromMinutes(_intervalInMinutes);
+                _timer = new Timer(DoWork, null, TimeSpan.Zero, interval);
+            }
+            else
+            {
+                _logger.LogWarning("Failed to fetch a valid interval from the database. Timer will not start.");
+            }
+        }
+
+        private async Task FetchIntervalFromDatabaseAsync()
+        {
+            try
+            {
+                // Fetch the CronJobSetting document with the specific name "NotificationCronJob"
+                var cronJobSetting = await _cronJobSettingsCollection
+                    .Find(setting => setting.Name == "NotificationCronJob")
+                    .FirstOrDefaultAsync();
+
+                if (cronJobSetting != null)
+                {
+                    _intervalInMinutes = cronJobSetting.IntervalInMinutes;
+                    _logger.LogInformation("Fetched interval of {intervalInMinutes} minutes from the database for cron job '{name}'.",
+                        _intervalInMinutes, cronJobSetting.Name);
+                }
+                else
+                {
+                    _logger.LogWarning("No cron job settings found in the database for 'NotificationCronJob'.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching interval from database.");
+            }
         }
 
         private void DoWork(object state)
@@ -51,7 +96,6 @@ namespace urbanmart.Services
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("NotificationCronJobService stopped at {time}", DateTime.Now);
-
             _timer?.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
         }
